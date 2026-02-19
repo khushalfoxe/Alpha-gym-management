@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Send Notification</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+body{font-family:Poppins;background:#f4f4f4;padding:20px;}
+.container{
+    background:white;padding:25px;max-width:450px;margin:auto;
+    border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+select,textarea{
+    width:100%;padding:12px;margin:10px 0;
+    border-radius:8px;border:1px solid #ccc;
+}
+button{
+    width:100%;padding:12px;border:none;
+    border-radius:8px;background:black;color:white;cursor:pointer;
+}
+button:hover{background:#e63946;}
+.back{background:gray;margin-top:10px;}
+.success{color:green;text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Send Notification</h2>
+
+<select id="memberSelect">
+<option value="">Select Member</option>
+</select>
+
+<textarea id="message" rows="4"
+placeholder="Enter message..."></textarea>
+
+<div class="success" id="success"></div>
+
+<button onclick="sendNotification()">Send</button>
+<button class="back" onclick="goBack()">⬅ Back</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAyG9FN8z6XNEXaNIzyO_iPdc8IZUCDENw",
+  authDomain: "alpha-4d34a.firebaseapp.com",
+  projectId: "alpha-4d34a",
+  storageBucket: "alpha-4d34a.firebasestorage.app",
+  messagingSenderId: "375125986516",
+  appId: "1:375125986516:web:0c9f70b6ede9c1f0b9bf41"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const memberSelect=document.getElementById("memberSelect");
+
+// Load members
+const snap=await getDocs(collection(db,"members"));
+snap.forEach(d=>{
+    const m=d.data();
+    memberSelect.innerHTML+=
+    `<option value="${d.id}|${m.name}">
+        ${m.name}
+     </option>`;
+});
+
+// Send notification
+window.sendNotification=async function(){
+
+    const member=memberSelect.value;
+    const message=document.getElementById("message").value;
+    const success=document.getElementById("success");
+
+    if(!member || !message){
+        alert("Fill all fields");
+        return;
+    }
+
+    const [memberId,memberName]=member.split("|");
+
+    await addDoc(collection(db,"notifications"),{
+        memberId,
+        memberName,
+        message,
+        timestamp:new Date()
+    });
+
+    success.innerText="✅ Notification Sent";
+    document.getElementById("message").value="";
+}
+
+window.goBack=()=>window.location.href="dashboard.html";
+
+</script>
+
+</body>
+</html>

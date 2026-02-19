@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Report - Alpha Gym</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+    font-family:Poppins;
+    background:#f4f4f4;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    max-width:700px;
+    margin:auto;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h2{text-align:center;}
+
+select,button{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:black;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{background:#e63946;}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.card{
+    background:#eee;
+    padding:15px;
+    border-radius:8px;
+    text-align:center;
+}
+
+.back{
+    background:gray;
+    margin-top:15px;
+}
+
+canvas{margin-top:20px;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>📊 Monthly Analytics</h2>
+
+<select id="month">
+<option value="">Select Month</option>
+<option>Jan</option><option>Feb</option><option>Mar</option>
+<option>Apr</option><option>May</option><option>Jun</option>
+<option>Jul</option><option>Aug</option><option>Sep</option>
+<option>Oct</option><option>Nov</option><option>Dec</option>
+</select>
+
+<button onclick="generateReport()">Generate Report</button>
+
+<div class="cards" id="cards" style="display:none;">
+<div class="card">
+<h4>Total Members</h4>
+<p id="totalMembers">0</p>
+</div>
+
+<div class="card">
+<h4>Paid Bills</h4>
+<p id="totalBills">0</p>
+</div>
+
+<div class="card">
+<h4>Revenue</h4>
+<p>₹ <span id="revenue">0</span></p>
+</div>
+</div>
+
+<canvas id="revenueChart"></canvas>
+
+<button class="back" onclick="goBack()">⬅ Back</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyAyG9FN8z6XNEXaNIzyO_iPdc8IZUCDENw",
+ authDomain:"alpha-4d34a.firebaseapp.com",
+ projectId:"alpha-4d34a"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+let chart;
+
+window.generateReport = async function(){
+
+ const month = document.getElementById("month").value.toLowerCase().trim();
+
+ if(!month){
+  alert("Select month");
+  return;
+ }
+
+ // Members count
+ const membersSnap = await getDocs(collection(db,"members"));
+ totalMembers.innerText = membersSnap.size;
+
+ const billsSnap = await getDocs(collection(db,"bills"));
+
+ let paidBills = 0;
+ let revenue = 0;
+ let dailyData = {};
+
+ billsSnap.forEach(d=>{
+  const b = d.data();
+
+  const billMonth = (b.month || "").toLowerCase();
+
+  // ✅ Only paid + matching month
+  if(
+    b.status === "paid" &&
+    billMonth.includes(month)
+  ){
+    const amt = Number(b.amount) || 0;
+
+    paidBills++;
+    revenue += amt;
+
+    const date = b.date || "Unknown";
+    dailyData[date] = (dailyData[date] || 0) + amt;
+  }
+ });
+
+ totalBills.innerText = paidBills;
+ document.getElementById("revenue").innerText = revenue;
+ document.getElementById("cards").style.display="grid";
+
+ // Chart
+ const labels = Object.keys(dailyData);
+ const values = Object.values(dailyData);
+
+ if(chart) chart.destroy();
+
+ chart = new Chart(
+  document.getElementById("revenueChart"),
+  {
+   type:"bar",
+   data:{
+    labels: labels,
+    datasets:[{
+     label:"Paid Revenue",
+     data: values
+    }]
+   },
+   options:{responsive:true}
+  }
+ );
+}
+
+ // Chart
+ const labels=Object.keys(dailyData);
+ const values=Object.values(dailyData);
+
+ if(chart) chart.destroy();
+
+ chart=new Chart(
+  document.getElementById("revenueChart"),
+  {
+   type:"bar",
+   data:{
+    labels:labels,
+    datasets:[{
+     label:"Paid Revenue per Day",
+     data:values
+    }]
+   },
+   options:{responsive:true}
+  }
+ );
+
+
+window.goBack=()=>window.location="dashboard.html";
+
+</script>
+
+</body>
+</html>

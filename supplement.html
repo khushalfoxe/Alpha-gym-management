@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplements - Alpha Gym</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:Poppins;
+    background:#f4f4f4;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:20px;
+    max-width:700px;
+    margin:auto;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h2{text-align:center;}
+
+input,textarea{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:black;
+    color:white;
+    width:100%;
+}
+
+button:hover{
+    background:#e63946;
+}
+
+.card{
+    background:#eee;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.delete{
+    background:red;
+    padding:6px 12px;
+    width:auto;
+}
+
+.back{
+    background:gray;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>💊 Supplement Store</h2>
+
+<input id="name" placeholder="Supplement Name">
+<input id="price" type="number" placeholder="Price">
+<textarea id="desc" placeholder="Description"></textarea>
+
+<button onclick="addSupplement()">Add Supplement</button>
+
+<h3>Available Supplements</h3>
+<div id="list"></div>
+
+<button class="back" onclick="goBack()">⬅ Back</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* Firebase Config */
+const firebaseConfig={
+ apiKey:"AIzaSyAyG9FN8z6XNEXaNIzyO_iPdc8IZUCDENw",
+ authDomain:"alpha-4d34a.firebaseapp.com",
+ projectId:"alpha-4d34a"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+/* Inputs */
+const nameInput=document.getElementById("name");
+const priceInput=document.getElementById("price");
+const descInput=document.getElementById("desc");
+const list=document.getElementById("list");
+
+/* Add Supplement */
+window.addSupplement=async()=>{
+ const name=nameInput.value.trim();
+ const price=priceInput.value;
+ const desc=descInput.value.trim();
+
+ if(!name||!price){
+   alert("Name & Price required");
+   return;
+ }
+
+ await addDoc(collection(db,"supplements"),{
+   name,
+   price,
+   description:desc,
+   createdAt:new Date()
+ });
+
+ alert("Supplement Added ✅");
+
+ nameInput.value="";
+ priceInput.value="";
+ descInput.value="";
+
+ loadSupplements();
+}
+
+/* Load Supplements */
+async function loadSupplements(){
+ list.innerHTML="";
+ const snap=await getDocs(collection(db,"supplements"));
+
+ snap.forEach(d=>{
+  const s=d.data();
+
+  list.innerHTML+=`
+  <div class="card">
+    <div>
+      <b>${s.name}</b><br>
+      ₹${s.price}<br>
+      <small>${s.description||""}</small>
+    </div>
+
+    <button class="delete" onclick="remove('${d.id}')">
+      Delete
+    </button>
+  </div>`;
+ });
+}
+
+loadSupplements();
+
+/* Delete */
+window.remove=async(id)=>{
+ await deleteDoc(doc(db,"supplements",id));
+ loadSupplements();
+}
+
+/* Back */
+window.goBack=()=>{
+ location.href="dashboard.html";
+}
+
+</script>
+
+</body>
+</html>

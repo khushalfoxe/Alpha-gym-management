@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Alpha Gym</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins, sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+    width:220px;
+    background:#111;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+}
+
+.sidebar a:hover{
+    background:#e63946;
+}
+
+/* Main Content */
+.main{
+    flex:1;
+    padding:30px;
+    background:#f5f5f5;
+}
+
+.header{
+    font-size:24px;
+    margin-bottom:20px;
+}
+
+/* Cards */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:scale(1.05);
+    background:#e63946;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Alpha Gym</h2>
+
+    <a href="dashboard.html">Dashboard</a>
+    <a href="addmember.html">Add Member</a>
+    <a href="updatemember.html">Update/Delete Member</a>
+    <a href="createbill.html">Create Bills</a>
+    <a href="package.html">Assign Package</a>
+    <a href="notification.html">Send Notification</a>
+    <a href="monthlyreport.html">Monthly Report</a>
+    <a href="supplement.html">Supplement Store</a>
+    <a href="diet.html">Diet Details</a>
+
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+    <div class="header">
+        Welcome Admin 👋
+    </div>
+
+    <div class="cards">
+
+        <div class="card" onclick="go('addmember.html')">
+            ➕ Add Member
+        </div>
+
+        <div class="card" onclick="go('updatemember.html')">
+            ✏ Update/Delete
+        </div>
+
+        <div class="card" onclick="go('createbill.html')">
+            💵 Create Bills
+        </div>
+
+        <div class="card" onclick="go('package.html')">
+            📦 Fee Package
+        </div>
+
+        <div class="card" onclick="go('notification.html')">
+            🔔 Notifications
+        </div>
+
+        <div class="card" onclick="go('monthlyreport.html')">
+            📊 Reports
+        </div>
+
+        <div class="card" onclick="go('supplement.html')">
+            🏋 Supplements
+        </div>
+
+        <div class="card" onclick="go('diet.html')">
+            🥗 Diet Plans
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function go(page){
+    window.location.href = page;
+}
+
+function logout(){
+    alert("Logged out");
+    window.location.href="admin.html";
+}
+</script>
+
+</body>
+</html>

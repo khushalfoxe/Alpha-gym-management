@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpha Gym</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Poppins;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+  background:#f5f5f5;
+}
+
+/* HERO */
+
+.hero{
+  height:100vh;
+  background:url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48") center/cover fixed;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  position:relative;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+}
+
+.hero h1{
+  position:relative;
+  font-size:clamp(40px,7vw,90px);
+  letter-spacing:2px;
+}
+
+/* SECTIONS */
+
+section{
+  padding:80px 20px;
+  text-align:center;
+}
+
+/* MOTIVATION SECTION */
+
+.motivation{
+  background:white;
+}
+
+.motivation img{
+  width:300px;
+  border-radius:15px;
+  margin-top:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  transition:.5s;
+}
+
+.motivation img:hover{
+  transform:scale(1.05);
+}
+
+.motivation p{
+  margin-top:10px;
+  font-size:18px;
+  color:#555;
+}
+
+/* LOGIN CARDS */
+
+.login{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+  padding-bottom:80px;
+}
+
+.card{
+  background:white;
+  border-radius:20px;
+  padding:40px;
+  width:230px;
+  transition:.4s;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.card:hover{
+  transform:translateY(-10px) scale(1.05);
+}
+
+button{
+  margin-top:15px;
+  padding:12px 22px;
+  border:none;
+  border-radius:25px;
+  background:black;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  transition:.3s;
+}
+
+button:hover{
+  background:#333;
+}
+
+/* REVEAL ANIMATION */
+
+.reveal{
+  opacity:0;
+  transform:translateY(60px);
+  transition:1s;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:translateY(0);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>ALPHA GYM</h1>
+</div>
+
+<!-- MOTIVATION -->
+<section class="motivation reveal">
+  <h2>Unleash Your Power</h2>
+  <p>Train Hard • Stay Fit • Be Alpha</p>
+
+  <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e">
+</section>
+
+<!-- LOGIN -->
+<section class="reveal">
+  <h2>Enter Alpha Mode</h2><br>
+
+  <div class="login">
+
+    <div class="card">
+      <h3>Admin</h3>
+      <p>Manage gym & members</p>
+      <button onclick="location.href='admin.html'">Admin Login</button>
+    </div>
+
+    <div class="card">
+      <h3>Member</h3>
+      <p>View plans & receipts</p>
+      <button onclick="location.href='member.html'">Member Login</button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+
+/* SCROLL REVEAL */
+
+window.addEventListener("scroll", ()=>{
+  
+  document.querySelectorAll(".reveal").forEach(el=>{
+    let top=el.getBoundingClientRect().top;
+    if(top < window.innerHeight-100){
+      el.classList.add("active");
+    }
+  });
+
+});
+
+/* HERO ZOOM EFFECT */
+
+window.addEventListener("scroll", ()=>{
+  let sc=window.scrollY;
+  document.querySelector(".hero").style.backgroundSize =
+      100 + sc*0.05 + "%";
+});
+
+</script>
+
+</body>
+</html>
